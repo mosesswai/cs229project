@@ -33,7 +33,7 @@ plt.show()
 print(dataframe['banking_crisis'].value_counts()) #print counts
 
 #------------------------------------------------------------------------------------------
-#						         	PRE-PROCESSING
+#				  PRE-PROCESSING
 #------------------------------------------------------------------------------------------
 
 # Drop the categorical variables which are not useful to the dataset for logistic regression
@@ -52,7 +52,7 @@ dataframe.head()
 
 
 #------------------------------------------------------------------------------------------
-#					  TRAINING
+#				  TRAINING
 #------------------------------------------------------------------------------------------
 
 # split the data into test train sets
@@ -70,7 +70,7 @@ Predictions = logmodel.predict(X_test)
 
 
 #------------------------------------------------------------------------------------------
-#						REPORT
+#			      REPORT
 #------------------------------------------------------------------------------------------
 from sklearn.metrics import classification_report
 print(classification_report(Y_test,Predictions))
@@ -88,7 +88,7 @@ roc_auc = metrics.auc(fpr, tpr)
 
 
 #------------------------------------------------------------------------------------------
-#						DISPLAY
+#			      DISPLAY
 #------------------------------------------------------------------------------------------
 
 
