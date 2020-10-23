@@ -23,7 +23,7 @@ Please also refer to the documentation for alternative solver options:
            0       0.80      0.86      0.83        14   
            1       0.99      0.98      0.99       198    
 
-    accuracy                           0.98       212   
-   macro avg       0.89      0.92      0.91       212   
-weighted avg       0.98      0.98      0.98       212   
+    accuracy                           0.98       212
+    macro avg      0.89      0.92      0.91       212 
+    weighet avg    0.98      0.98      0.98       212   
 
