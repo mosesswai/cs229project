@@ -18,8 +18,8 @@ Increase the number of iterations (max_iter) or scale the data as shown in:
 Please also refer to the documentation for alternative solver options:    
     https://scikit-learn.org/stable/modules/linear_model.html#logistic-regression    
   extra_warning_msg=_LOGISTIC_SOLVER_CONVERGENCE_MSG).      
-              precision    recall  f1-score   support    
       
+                 precision  recall    f1-score   support   
            0       0.80      0.86      0.83        14   
            1       0.99      0.98      0.99       198    
 
