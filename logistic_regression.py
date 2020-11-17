@@ -15,7 +15,7 @@ import seaborn as sns
 
 # Dataset pre processing configuration
 remove_kaggle_parameters = False
-include_extra_parameters = False
+include_extra_parameters = True
 
 ##Some configuration settings
 pd.set_option("display.max_columns", 100)
@@ -27,7 +27,7 @@ sns.set(style="whitegrid", color_codes=True)
 #------------------------------------------------------------------------------------------
 
 # Import the main data
-dataframe = pd.read_csv('african_crises.csv')#, index_col = 1) #index col neccessary?
+dataframe = pd.read_csv('data/african_crises.csv')
 print(dataframe.shape) #(1059, 13)
 
 # Add a unique index to each data point
@@ -50,7 +50,7 @@ def add_parameter(dataframe, param_name, file_name):
         temp_data = temp_data.set_index('year')
         
         # Extract data batch based on country code from parameter data
-        temp_param_data = param_data.loc[[cc]].transpose().iloc[1:]
+        temp_param_data = param_data.loc[[cc]].transpose().iloc[2:]
         temp_param_data.columns = [param_name]
         temp_param_data.index = temp_param_data.index.astype('int64') 
 
@@ -61,8 +61,22 @@ def add_parameter(dataframe, param_name, file_name):
         temp_data = temp_data.set_index('idx')
         dataframe.update(temp_data)
 
-add_parameter(dataframe, 'gdp_growth','data_gdp_growth.csv')
-# print(ff)
+# Include extra parameters if configured
+if include_extra_parameters:
+    #G1
+    add_parameter(dataframe, 'population_growth','data/data_population_growth.csv')
+    add_parameter(dataframe, 'foreign_aid','data/data_foreign_aid.csv')
+    #G2
+    # add_parameter(dataframe, 'gdp_growth','data/data_gdp_growth.csv')
+    # add_parameter(dataframe, 'gni','data/data_gni.csv')
+    #G3
+    # add_parameter(dataframe, 'fdi','data/data_fdi.csv')
+    # add_parameter(dataframe, 'ext_debt','data/data_ext_debt_stocks.csv')
+    #G4
+    # add_parameter(dataframe, 'unemployment','data/data_unemployment.csv')
+
+    dataframe.dropna(inplace = True)
+    print(dataframe.shape) 
 
 # Plot total number of cases by country
 sns.countplot(x='country', data=dataframe, palette ='hls')
