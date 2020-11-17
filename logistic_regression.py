@@ -9,22 +9,65 @@ from sklearn.linear_model import LogisticRegression
 from sklearn.model_selection import train_test_split
 import seaborn as sns
 
+#------------------------------------------------------------------------------------------
+#				  CONFIGURATION
+#------------------------------------------------------------------------------------------
+
+# Dataset pre processing configuration
+remove_kaggle_parameters = False
+include_extra_parameters = False
+
 ##Some configuration settings
 pd.set_option("display.max_columns", 100)
 sns.set(style="white")
 sns.set(style="whitegrid", color_codes=True)
 
-#import the data
-dataframe = pd.read_csv('african_crises.csv', index_col = 0) #index col neccessary?
-dataframe.head()
+#------------------------------------------------------------------------------------------
+#				  IMPORT DATA
+#------------------------------------------------------------------------------------------
 
+# Import the main data
+dataframe = pd.read_csv('african_crises.csv')#, index_col = 1) #index col neccessary?
 print(dataframe.shape) #(1059, 13)
 
+# Add a unique index to each data point
+dataframe['idx'] = np.arange(len(dataframe))
+dataframe.set_index('idx', inplace=True)
+
+
+# Add extra parameter from a .csv file to the original dataframe
+def add_parameter(dataframe, param_name, file_name):
+    param_data = pd.read_csv(file_name, index_col=1)
+
+    # Add new parameter column
+    dataframe[param_name] = np.nan
+
+    for cc in param_data.index:
+        # Extract data batch based on country code from original dataframe
+        # and make the year the index
+        temp_data = dataframe.loc[dataframe['cc3'] == cc]
+        temp_data = temp_data.reset_index()
+        temp_data = temp_data.set_index('year')
+        
+        # Extract data batch based on country code from parameter data
+        temp_param_data = param_data.loc[[cc]].transpose().iloc[1:]
+        temp_param_data.columns = [param_name]
+        temp_param_data.index = temp_param_data.index.astype('int64') 
+
+        # Update the temporary data batch to add parameter data then
+        # update the original dataframe
+        temp_data.update(temp_param_data)
+        temp_data = temp_data.reset_index()
+        temp_data = temp_data.set_index('idx')
+        dataframe.update(temp_data)
+
+add_parameter(dataframe, 'gdp_growth','data_gdp_growth.csv')
+# print(ff)
 
 # Plot total number of cases by country
 sns.countplot(x='country', data=dataframe, palette ='hls')
 plt.xticks(rotation=90)
-plt.show()
+# plt.show()
 
 # Plot counts of 'x'_crisis, where 'x' can equals: systemic, currency, inflation, branking.
 sns.countplot(x='systemic_crisis', data=dataframe, palette ='hls')
@@ -37,7 +80,7 @@ print(dataframe['banking_crisis'].value_counts()) #print counts
 #------------------------------------------------------------------------------------------
 
 # Drop the categorical variables which are not useful to the dataset for logistic regression
-dataframe = dataframe.drop(['cc3', 'country', 'year'], axis =1)
+dataframe = dataframe.drop(['idx', 'cc3', 'country', 'year'], axis =1)
 dataframe.head()
 
 # drop this column since it is not informative (jsutify with plot later)
