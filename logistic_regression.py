@@ -64,8 +64,8 @@ def add_parameter(dataframe, param_name, file_name):
 # Include extra parameters if configured
 if include_extra_parameters:
     #G1
-    # add_parameter(dataframe, 'population_growth','data/data_population_growth.csv')
-    # add_parameter(dataframe, 'foreign_aid','data/data_foreign_aid.csv')
+    #add_parameter(dataframe, 'population_growth','data/data_population_growth.csv')
+    #add_parameter(dataframe, 'foreign_aid','data/data_foreign_aid.csv')
     #G2
     # add_parameter(dataframe, 'gdp_growth','data/data_gdp_growth.csv')
     # add_parameter(dataframe, 'gni','data/data_gni.csv')
@@ -123,6 +123,9 @@ print(X_test.shape, Y_test.shape)
 from sklearn.linear_model import LogisticRegression
 logmodel = LogisticRegression()
 logmodel.fit(X_train, Y_train)
+# coefficients
+print("LogisticRegression coefficients : ")
+print(logmodel.coef_)
 # predict
 Predictions = logmodel.predict(X_test)
 
@@ -152,7 +155,6 @@ roc_auc = metrics.auc(fpr, tpr)
 
 # method I: plt
 import matplotlib.pyplot as plt
-plt.title('Flase Positives /True Positives')
 plt.plot(fpr, tpr, 'b', label = 'AUC = %0.2f' % roc_auc)
 plt.legend(loc = 'lower right')
 plt.plot([0, 1], [0, 1],'r--')
@@ -160,4 +162,5 @@ plt.xlim([0, 1])
 plt.ylim([0, 1])
 plt.ylabel('True Positive Rate')
 plt.xlabel('False Positive Rate')
+# plt.savefig('plot1.png')
 # plt.show()
