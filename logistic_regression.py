@@ -64,8 +64,8 @@ def add_parameter(dataframe, param_name, file_name):
 # Include extra parameters if configured
 if include_extra_parameters:
     #G1
-    add_parameter(dataframe, 'population_growth','data/data_population_growth.csv')
-    add_parameter(dataframe, 'foreign_aid','data/data_foreign_aid.csv')
+    # add_parameter(dataframe, 'population_growth','data/data_population_growth.csv')
+    # add_parameter(dataframe, 'foreign_aid','data/data_foreign_aid.csv')
     #G2
     # add_parameter(dataframe, 'gdp_growth','data/data_gdp_growth.csv')
     # add_parameter(dataframe, 'gni','data/data_gni.csv')
@@ -86,7 +86,7 @@ plt.xticks(rotation=90)
 # Plot counts of 'x'_crisis, where 'x' can equals: systemic, currency, inflation, branking.
 sns.countplot(x='systemic_crisis', data=dataframe, palette ='hls')
 plt.xticks(rotation=90)
-plt.show()
+# plt.show()
 print(dataframe['banking_crisis'].value_counts()) #print counts
 
 #------------------------------------------------------------------------------------------
@@ -94,6 +94,7 @@ print(dataframe['banking_crisis'].value_counts()) #print counts
 #------------------------------------------------------------------------------------------
 
 # Drop the categorical variables which are not useful to the dataset for logistic regression
+dataframe.reset_index(inplace = True)
 dataframe = dataframe.drop(['idx', 'cc3', 'country', 'year'], axis =1)
 dataframe.head()
 
@@ -159,4 +160,4 @@ plt.xlim([0, 1])
 plt.ylim([0, 1])
 plt.ylabel('True Positive Rate')
 plt.xlabel('False Positive Rate')
-plt.show()
+# plt.show()
