@@ -81,13 +81,15 @@ if include_extra_parameters:
 # Plot total number of cases by country
 sns.countplot(x='country', data=dataframe, palette ='hls')
 plt.xticks(rotation=90)
+plt.savefig('country_ct.png')
 # plt.show()
 
 # Plot counts of 'x'_crisis, where 'x' can equals: systemic, currency, inflation, branking.
 sns.countplot(x='systemic_crisis', data=dataframe, palette ='hls')
 plt.xticks(rotation=90)
+plt.savefig('crisis_ct.png')
 # plt.show()
-print(dataframe['banking_crisis'].value_counts()) #print counts
+#print(dataframe['banking_crisis'].value_counts()) #print counts
 
 #------------------------------------------------------------------------------------------
 #				  PRE-PROCESSING
@@ -98,15 +100,52 @@ dataframe.reset_index(inplace = True)
 dataframe = dataframe.drop(['idx', 'cc3', 'country', 'year'], axis =1)
 dataframe.head()
 
-# drop this column since it is not informative (jsutify with plot later)
+# Drop this column since it is not informative (jsutify with plot later)
 dataframe = dataframe.drop(['gdp_weighted_default'], axis =1)
 dataframe.head()
 
+# Convert 'no_crisis' & 'crisis' to discrete indictors (crisis = 1)
+dataframe['banking_crisis'] = dataframe['banking_crisis'].replace(['crisis'],1)
+dataframe['banking_crisis'] = dataframe['banking_crisis'].replace(['no_crisis'],0)
+
+print("----- general_crisis -----")
+# Define new "general_crisis" as occurrence of either:
+# 1. Banking Crisis
+# 2. Currency Crisis
+# 3. Inflation Crisis
+# 4. Systemic Crisis
+df = dataframe.assign(general_crisis=lambda x: 
+    x['systemic_crisis'] | 
+    x['banking_crisis'] | 
+    x['currency_crises'] | 
+    x['inflation_crises']
+);
+
+df.to_csv('outdf.csv', index=False)
+dataframe.to_csv('outdataf.csv', index=False)
+
+
+#print()
 # Define ouput column y and drop from dataset
-y = dataframe[['banking_crisis']]
+#y = dataframe[['banking_crisis']]
+#print(y)
 y = pd.get_dummies(dataframe['banking_crisis'],drop_first=True)
+print(y)
 dataframe = dataframe.drop(['banking_crisis'], axis =1)
 dataframe.head()
+
+#y = df[['general_crisis']]
+#print(y)
+y_ = pd.get_dummies(df['general_crisis'],drop_first=True)
+yi = y_.take([0], axis=1)
+print(yi)
+df = df.drop(['general_crisis'], axis =1)
+df.head()
+
+df.to_csv('outdf.csv', index=False)
+dataframe.to_csv('outdataf.csv', index=False)
+
+
 
 
 #------------------------------------------------------------------------------------------
@@ -116,7 +155,8 @@ dataframe.head()
 # split the data into test train sets
 from sklearn.model_selection import train_test_split
 # create training and testing vars
-X_train, X_test, Y_train, Y_test = train_test_split(dataframe, y, test_size=0.2)
+X_train, X_test, Y_train, Y_test = train_test_split(df, yi, test_size=0.2)
+print("----- Training -----")
 print(X_train.shape, Y_train.shape)
 print(X_test.shape, Y_test.shape)
 # train
@@ -162,5 +202,5 @@ plt.xlim([0, 1])
 plt.ylim([0, 1])
 plt.ylabel('True Positive Rate')
 plt.xlabel('False Positive Rate')
-# plt.savefig('plot1.png')
+plt.savefig('image1.png')
 # plt.show()
