@@ -113,10 +113,6 @@ dataframe['banking_crisis'] = dataframe['banking_crisis'].replace(['no_crisis'],
 
 print("----- general_crisis -----")
 # Define new "general_crisis" as occurrence of either:
-# 1. Banking Crisis
-# 2. Currency Crisis
-# 3. Inflation Crisis
-# 4. Systemic Crisis
 df = dataframe.assign(general_crisis=lambda x: 
     x['systemic_crisis'] | 
     x['banking_crisis'] | 
